@@ -119,7 +119,9 @@ static int			_operationCount		= 0;
 				[urlRequest setHTTPBody:_body];
 			[urlRequest setHTTPMethod:_method ? _method : @"GET"];
 			
-			self.connection = [[[NSURLConnection alloc] initWithRequest:urlRequest delegate:self] autorelease];
+			self.connection = [[[NSURLConnection alloc] initWithRequest:urlRequest delegate:self startImmediately:NO] autorelease];
+			[self.connection scheduleInRunLoop:[NSRunLoop currentRunLoop] forMode:NSRunLoopCommonModes];
+			[self.connection start];
 			if(!_connection)
 				[self cleanup];
 		}
