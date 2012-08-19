@@ -8,33 +8,34 @@ I offered to maintain this for Matt, so please feel free to contribute to this.
 Example of Usage
 ================
 
-#import "NetRequest.h"
-#import "JSONKit.h"
-
-- (void)loadSomething
-{
-	if([NetQueue urlQueued:jsonRequestURL])
-		[NetQueue cancelURL:jsonRequestURL];
-		
-	NSString* dataString = @"param1=7&param2=whatever";
-	NetRequest* request = [NetRequest request:jsonRequestURL];
-	request.method = @"POST";
-	request.body = [NSData dataWithBytes:[dataString UTF8String] length:[dataString length]];
-	request.parseHandler = ^(NetRequest* req)
+	#import "NetRequest.h"
+	#import "JSONKit.h"
+	
+	- (void)loadSomething
 	{
-		if(!req.error)
-			req.userData = [req.responseBody  objectFromJSONData];	// parse on a background thread
-	};
-	request.completionHandler = ^(NetRequest* req)
-	{
-		if(!req.error)
+		if([NetQueue urlQueued:jsonRequestURL])
+			[NetQueue cancelURL:jsonRequestURL];
+			
+		NSString* dataString = @"param1=7&param2=whatever";
+		NetRequest* request = [NetRequest request:jsonRequestURL];
+		request.method = @"POST";
+		request.body = [NSData dataWithBytes:[dataString UTF8String] length:[dataString length]];
+		request.parseHandler = ^(NetRequest* req)
 		{
-			for(NSDictionary* dict in req.userData)
-				;	// handle parsed response on the main thread
-		}
-	};
-	[NetQueue add:request];
-}
+			if(!req.error)
+				req.userData = [req.responseBody  objectFromJSONData];	// parse on a background thread
+		};
+		request.completionHandler = ^(NetRequest* req)
+		{
+			if(!req.error)
+			{
+				for(NSDictionary* dict in req.userData)
+					;	// handle parsed response on the main thread
+			}
+		};
+		[NetQueue add:request];
+	}
+
 
 License
 ==========
